@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Visualize My Value</title>
+
+    <!-- Load d3.js -->
+    <script src="d3.v6.js"></script>
+    <script src="jquery.min.js"></script>
+
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Load color palettes -->
+    <meta name="description" content="Visualize My Value is a data viz project developed by Munus Shih
+    using the dataset from AIGA anonymous
+    Graphic Design Salary Transparency spreadsheet.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <header>
+        <h1>VISUALIZE <span class="value">MY <span class="v">V</span>ALUE</span></h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li class="project">About the Project</li>
+            <a
+                href="https://docs.google.com/spreadsheets/d/1aFoSJr1qWBH3nWMeoEdFP4her8NvI7RZf6skyQmOAsU/edit#gid=257041397">
+                <li>Source</li>
+            </a>
+        </ul>
+    </nav>
+
+    <aside>
+        <ul>
+            <p>Compare:</p>
+            <li><input type="radio" id="race" name="compare" onclick="compareClick(this);" value="2" checked>
+                <label for="race">Race</label></li>
+            <li> <input type="radio" id="gender" name="compare" onclick="compareClick(this);" value="1">
+                <label for="gender">Gender</label></li>
+            <li><input type="radio" id="education" name="compare" onclick="compareClick(this);" value="3">
+                <label for="education">Education</label></li>
+        </ul>
+        <ul>
+            <p>Chart Type:</p>
+            <li><input type="radio" id="scatter" name="chart" onclick="compareClick(this);" value="4" checked>
+                <label for="scatter">Scatter Plot</label></li>
+        </ul>
+    </aside>
+
+    <section>
+        <h1 id="closer">X</h1>
+        <br>
+
+        <p>Visualize My Value is a data viz project developed by <a href="https://munusshih.com">Munus Shih (he/him)</a>
+            using
+            the dataset from AIGA anonymous
+            Graphic Design Salary Transparency spreadsheet.</p>
+        <br>
+        <p>The project tends to visualize the salary of NYC graphic designers with an emphasis on a more critical social
+            science perspective. Users can choose betweeen three factors: gender, race, educational level and see how
+            they play a role in determining one's salary in comparison to their years of experience.</p>
+        <br>
+        <p>
+            The visualization is more of a question than a solution, wishing the
+            users would question what power structure, prejudice, or mechanism is working behind these data and why it
+            is
+            what it is right now. The aim is to spark discussions rather than provide answers.
+        </p>
+
+        <div class="instruction">
+            <p>[ How to interact ]</p>
+            <ul>
+                <li>You can zoom in or zoom out of the chart using your mouse or scroller. </li>
+                <li>Hover on any of the dot to see
+                    more info about each desginer.</li>
+                <li>You can could also click into the sheet itself to find out more about the raw data.</li>
+        </div>
+
+
+    </section>
+
+    <div id="my_dataviz">
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
