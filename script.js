@@ -25,6 +25,10 @@ let qedu = ['ASSOCIATE', 'CERT.', 'HIGHSCHOOL', 'COLLEGE', 'MASTER', 'PHD']
 let cedu = ["#8b5ffc", "#00cbbf", "#900c3e", "#ff0967", "#f0f44b", "#2e3046"]
 let nedu = ["3.85%", "0.17%", "1.54%", "86.50%", "7.86%", "0.09%"]
 
+let qori = ['STRAIGHT', 'BI/PAN', 'GAY/LES', 'QUEER/FLUID', 'DEMI', 'ASEXUAL', 'UNDISCLOSED']
+let cori = ["#f72585", "#b5179e", "#7209b7", "#480ca8", "#4361ee", "#4895ef"]
+let nori = ["79.40%", "10.00%", "5.73%", "4.44%", "0.09%", "0.26%", "0.09%"]
+
 // sidebard
 var toggleBtn = document.querySelector('.project');
 var closer = document.querySelector('#closer');
@@ -38,13 +42,13 @@ closer.addEventListener('click', function () {
     sidebar.classList.toggle('is-closed');
 })
 
-$(document).ready(function(){
+$(document).ready(function () {
 
     /*! Fades in page on load */
     $('body').css('display', 'none');
     $('body').fadeIn(2000);
-    
-    });
+
+});
 
 function handleZoom(e) {
     transformer = (((e.transform.x + e.transform.y) / 2 * -1 / 400) + 1)
@@ -175,6 +179,29 @@ function updateData(compare) {
             legend.append("circle").attr("cx", widther - 200 - 60).attr("cy", height - 330 + i * 30).attr("r", 6).style("fill", cedu[i])
             legend.append("text").attr("x", widther - 188 - 60).attr("y", height - 330 + i * 30).text(qedu[i] + "  " + nedu[i]).style("font-size", "13px").style("font-family", "'IBM Plex Mono', monospace").style("fill", "#fff").attr("alignment-baseline", "middle")
         }
+    } else if (compare ==4) {
+        color = d3.scaleOrdinal()
+            .domain(qori)
+            .range(cori);
+
+        d3.csv("cleanData.csv", function (data) {
+            // Select the section we want to apply our changes to
+            svg.selectAll("circle")
+                .style("fill", function (d) {
+                    return color(d.Orientation)
+                })
+        });
+
+        legend.remove()
+
+        legend = svg
+            .append('g') // NEW
+            .attr('class', 'legend') // NEW
+
+        for (let i = 0; i < qori.length; i++) {
+            legend.append("circle").attr("cx", widther - 200 - 60).attr("cy", height - 360 + i * 30).attr("r", 6).style("fill", cori[i])
+            legend.append("text").attr("x", widther - 188 - 60).attr("y", height - 360 + i * 30).text(qori[i] + "  " + nori[i]).style("font-size", "13px").style("font-family", "'IBM Plex Mono', monospace").style("fill", "#fff").attr("alignment-baseline", "middle")
+        }
     }
 
 }
@@ -195,7 +222,7 @@ d3.csv("cleanData.csv").then(function (data) {
 
     // Add Y axis
     y = d3.scalePow()
-        .exponent(1 / (3))
+        .exponent(-0.2)
         .domain([15000, 15000])
         .range([height, 0]);
     var formatComma = d3.format(",")
@@ -247,6 +274,7 @@ d3.csv("cleanData.csv").then(function (data) {
             pRace = capitalizeFirstLetter(d.Race)
             pPronouns = capitalizeFirstLetter(d.Pronouns)
             pEducation = capitalizeFirstLetter(d.Education)
+            pOri = capitalizeFirstLetter(d.Orientation)
 
             tooltip.transition()
                 .duration(200)
@@ -254,9 +282,10 @@ d3.csv("cleanData.csv").then(function (data) {
             tooltip.html(d.Title +
                     '<br>' +
                     '$ ' + pSalary + '<br>' + '<br>' +
-                    d.Years + ' yrs experience' + '<br>' +
-                    pRace + ', ' + pPronouns + '<br>' +
-                    pEducation + ' degree<br>' + d.City)
+                    d.Years + ' yrs experience' + '<br>'+
+                    d.City + '<br><br>' + 'Race: ' +
+                    pRace + '<br>Gender: ' + pPronouns + '<br>Orientation: ' + pOri + '<br>Edu: ' +
+                    pEducation+ ' degree')
                 .style("left", (event.pageX + 20) + "px")
                 .style("top", (event.pageY - 28) + "px");
 
@@ -282,7 +311,7 @@ d3.csv("cleanData.csv").then(function (data) {
         });
 
     // new X axis
-    y.domain([10000, 320000])
+    y.domain([20000, 620000])
     svg.select(".myYaxis")
         .transition()
         .duration(2000)

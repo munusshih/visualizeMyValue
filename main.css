@@ -100,7 +100,7 @@ aside {
     right: 0px;
     bottom: 0px;
     padding: 18px;
-    padding-right: 90px;
+    padding-right: 40px;
     padding-left: 23px;
 
     color: #604c3f;
@@ -194,7 +194,7 @@ div.tooltip {
     position: absolute;
     text-align: left;
     padding: 10px;
-    font-size: 9px;
+    font-size: 10px;
     font-family: 'IBM Plex Mono', monospace;
 
     background: #f7f8f8;
