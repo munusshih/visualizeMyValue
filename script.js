@@ -13,11 +13,11 @@ let zoom = d3.zoom()
     ])
     .on('zoom', handleZoom);
 
-let qgender = ["HE/HIM", "SHE/HER", "NON-BINARY"]
+let qgender = ["HE-HIM", "SHE-HER", "NON-BINARY"]
 let cgender = ["#fe3ff1", "#3323fc", "#ffffff"]
 let ngender = ["28.55%", "69.49%", "1.97%"]
 
-let qraces = ["WHITE", "MIXED", "ASIAN", "LATINO/HISPANIC", "INDEGIOUS", "BLACK"]
+let qraces = ["WHITE", "MIXED", "ASIAN", "LATINO-HISPANIC", "INDEGIOUS", "BLACK"]
 let craces = ["#ff9900", "#fc584c", "#ff4f8b", "#a166ff", "#19a2c7", "#56c0a7"]
 let nraces = ["62.48%", "8.12%", "21.88%", "4.19%", "0.34%", "2.99%"]
 
@@ -25,7 +25,7 @@ let qedu = ['ASSOCIATE', 'CERT.', 'HIGHSCHOOL', 'COLLEGE', 'MASTER', 'PHD']
 let cedu = ["#8b5ffc", "#00cbbf", "#900c3e", "#ff0967", "#f0f44b", "#2e3046"]
 let nedu = ["3.85%", "0.17%", "1.54%", "86.50%", "7.86%", "0.09%"]
 
-let qori = ['STRAIGHT', 'BI/PAN', 'GAY/LES', 'QUEER/FLUID', 'DEMI', 'ASEXUAL', 'UNDISCLOSED']
+let qori = ['STRAIGHT', 'BI-PAN', 'GAY-LES', 'QUEER-FLUID', 'DEMI', 'ASEXUAL', 'UNDISCLOSED']
 let cori = ["#f72585", "#b5179e", "#7209b7", "#480ca8", "#4361ee", "#4895ef"]
 let nori = ["79.40%", "10.00%", "5.73%", "4.44%", "0.09%", "0.26%", "0.09%"]
 
@@ -90,7 +90,7 @@ var svg = d3.select("#my_dataviz")
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
-var compareValue = 1;
+var compareValue = 2;
 
 function compareClick(compare) {
     compareValue = compare.value;
@@ -179,7 +179,7 @@ function updateData(compare) {
             legend.append("circle").attr("cx", widther - 200 - 60).attr("cy", height - 330 + i * 30).attr("r", 6).style("fill", cedu[i])
             legend.append("text").attr("x", widther - 188 - 60).attr("y", height - 330 + i * 30).text(qedu[i] + "  " + nedu[i]).style("font-size", "13px").style("font-family", "'IBM Plex Mono', monospace").style("fill", "#fff").attr("alignment-baseline", "middle")
         }
-    } else if (compare ==4) {
+    } else if (compare == 4) {
         color = d3.scaleOrdinal()
             .domain(qori)
             .range(cori);
@@ -264,7 +264,9 @@ d3.csv("cleanData.csv").then(function (data) {
             return y(d.Salary);
         })
         .attr("r", 6 / transformer)
-        .attr("class", "main")
+        .attr("class", function (d) {
+            return "main dot " + d.Race + " " + d.Education + " " + d.Pronouns + " " + d.Orientation
+        })
         .style("fill", function (d) {
             return color(d.Race)
         })
@@ -282,20 +284,45 @@ d3.csv("cleanData.csv").then(function (data) {
             tooltip.html(d.Title +
                     '<br>' +
                     '$ ' + pSalary + '<br>' + '<br>' +
-                    d.Years + ' yrs experience' + '<br>'+
+                    d.Years + ' yrs experience' + '<br>' +
                     d.City + '<br><br>' + 'Race: ' +
                     pRace + '<br>Gender: ' + pPronouns + '<br>Orientation: ' + pOri + '<br>Edu: ' +
-                    pEducation+ ' degree')
+                    pEducation + ' degree')
                 .style("left", (event.pageX + 20) + "px")
                 .style("top", (event.pageY - 28) + "px");
 
             if (initial) {
-                d3.select(this)
+
+                if (compareValue == 1) {
+                    selected = d.Pronouns;
+                } else if (compareValue == 2) {
+                    selected = d.Race;
+                } else if (compareValue == 3) {
+                    selected = d.Education;
+                } else if (compareValue == 3) {
+                    selected = d.Orientation;
+                }
+
+                d3.selectAll(".dot")
                     .transition()
                     .duration(200)
-                    .attr("r", 10 / transformer)
+                    .style("fill", "#222")
+                    .attr("r", 0 / transformer)
+
+                d3.selectAll("." + selected)
+                    .transition()
+                    .duration(200)
+                    .style("fill", color(selected))
+                    .attr("r", 6 / transformer)
             }
+
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr("r", 10 / transformer)
+
         })
+
         .on("mouseleave", function (d) {
             tooltip.transition()
                 .duration(500)
@@ -303,6 +330,32 @@ d3.csv("cleanData.csv").then(function (data) {
 
 
             if (initial) {
+                if (compareValue == 1) {
+                    d3.selectAll(".dot")
+                        .transition()
+                        .duration(200)
+                        .style("fill", d => color(d.Pronouns))
+                        .attr("r", 6 / transformer)
+                } else if (compareValue == 2) {
+                    d3.selectAll(".dot")
+                        .transition()
+                        .duration(200)
+                        .style("fill", d => color(d.Race))
+                        .attr("r", 6 / transformer)
+                } else if (compareValue == 3) {
+                    d3.selectAll(".dot")
+                        .transition()
+                        .duration(200)
+                        .style("fill", d => color(d.Education))
+                        .attr("r", 6 / transformer)
+                } else if (compareValue == 4) {
+                    d3.selectAll(".dot")
+                        .transition()
+                        .duration(200)
+                        .style("fill", d => color(d.Orientation))
+                        .attr("r", 6 / transformer)
+                }
+
                 d3.select(this)
                     .transition()
                     .duration(200)
@@ -312,6 +365,7 @@ d3.csv("cleanData.csv").then(function (data) {
 
     // new X axis
     y.domain([20000, 620000])
+
     svg.select(".myYaxis")
         .transition()
         .duration(2000)
