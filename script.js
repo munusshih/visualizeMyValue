@@ -214,11 +214,7 @@ d3.csv("cleanData.csv").then(function (data) {
         .domain([-5, 42])
         .range([0, width]);
     var x_axis = d3.axisBottom(x).scale(x).ticks(5).tickFormat((d, i) => d + " yrs");
-    xAxis = svg.append("g")
-        .attr("class", "myXaxis") // Note that here we give a class to the X axis, to be able to call it later and modify it
-        .attr("transform", 'translate(0, ' + (height - 10) + ')')
-        .call(x_axis)
-        .attr("opacity", "0")
+
 
     // Add Y axis
     y = d3.scalePow()
@@ -227,10 +223,6 @@ d3.csv("cleanData.csv").then(function (data) {
         .range([height, 0]);
     var formatComma = d3.format(",")
     var y_axis = d3.axisLeft(y).scale(y).ticks(6).tickFormat((d, i) => "$ " + formatComma(d));
-    yAxis = svg.append("g")
-        .attr("class", "myYaxis")
-        .attr("transform", "translate(30, 0)")
-        .call(y_axis);
 
     // Color
     color = d3.scaleOrdinal()
@@ -265,7 +257,7 @@ d3.csv("cleanData.csv").then(function (data) {
         })
         .attr("r", 6 / transformer)
         .attr("class", function (d) {
-            return "main dot " + d.Race + " " + d.Education + " " + d.Pronouns + " " + d.Orientation
+            return "main dot " + d.Race + " " + d.Education + " " + d.Pronouns + " " + d.Orientation;
         })
         .style("fill", function (d) {
             return color(d.Race)
@@ -299,14 +291,14 @@ d3.csv("cleanData.csv").then(function (data) {
                     selected = d.Race;
                 } else if (compareValue == 3) {
                     selected = d.Education;
-                } else if (compareValue == 3) {
+                } else if (compareValue == 4) {
                     selected = d.Orientation;
                 }
 
                 d3.selectAll(".dot")
                     .transition()
                     .duration(200)
-                    .style("fill", "#222")
+                    .style("fill", "#333333")
                     .attr("r", 0 / transformer)
 
                 d3.selectAll("." + selected)
@@ -362,6 +354,17 @@ d3.csv("cleanData.csv").then(function (data) {
                     .attr("r", 6 / transformer)
             }
         });
+
+    xAxis = svg.append("g")
+        .attr("class", "myXaxis") // Note that here we give a class to the X axis, to be able to call it later and modify it
+        .attr("transform", 'translate(0, ' + (height - 10) + ')')
+        .call(x_axis)
+        .attr("opacity", "0")
+    yAxis = svg.append("g")
+        .attr("class", "myYaxis")
+        .attr("transform", "translate(30, 0)")
+        .call(y_axis);
+
 
     // new X axis
     y.domain([20000, 620000])
